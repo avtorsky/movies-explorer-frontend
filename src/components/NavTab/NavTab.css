@@ -1,0 +1,18 @@
+.navtab {
+  padding: 0 70px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: left;
+  background-color: #073042;
+}
+
+.navtab__item {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .navtab {
+    justify-content: center;
+    align-items: center;
+  }
+}

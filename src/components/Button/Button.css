@@ -1,0 +1,256 @@
+.button {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  transition: opacity .3s ease-in-out;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
+
+.button_visible {
+  opacity: 1;
+}
+
+.button_disabled {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  opacity: 0.5;
+}
+
+.button_type_login {
+  margin-left: 30px;
+  padding: 8px 20px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  background-color: #3DDC84;
+  border-radius: 3px;
+  color: #000000;
+}
+
+.button_type_account {
+  margin: 0;
+  padding: 8px 20px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  background: #202020;
+  background-image: url('../../images/button_type_account.svg');
+  background-repeat: no-repeat;
+  background-position: left;
+  border-radius: 20px;
+  color: #FFFFFF;
+}
+
+.button_type_save {
+  width: 21px;
+  height: 21px;
+  background: transparent;
+  background-image: url('../../images/button_type_save.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+}
+
+.button_type_saved {
+  width: 21px;
+  height: 21px;
+  background: transparent;
+  background-image: url('../../images/button_type_saved.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+}
+
+.button_type_delete {
+  width: 21px;
+  height: 21px;
+  background: transparent;
+  background-image: url('../../images/button_type_delete.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+}
+
+.button_type_next {
+  position: relative;
+  margin: 50px 0;
+  padding: 10px 60px;
+  width: 320px;
+  align-self: center;
+  background: #2F2F2F;
+  border-radius: 6px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #FFFFFF;
+}
+
+.button_type_more {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 129px;
+  height: 36px;
+  top: -75px;
+  background-color: transparent;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 1);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #FFFFFF;
+}
+
+.button_type_search {
+  margin-right: 20px;
+  background: #4285F4;
+  border-radius: 48px;
+  align-self: center;
+  width: 100px;
+  height: 34px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+  color: #FFFFFF;
+}
+
+.button_type_edit {
+  margin-top: 204px;
+  font-size: 13px;
+  line-height: 16px;
+  background-color: transparent;
+  color: #FFFFFF;
+}
+
+.button_type_logout {
+  margin-top: 16px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  color: #EE3465;
+  background-color: transparent;
+}
+
+.button_type_register {
+  margin-top: 69px;
+  padding: 15px 0;
+  width: 100%;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #FFFFFF;
+  background: #4285F4;
+  border-radius: 3px;
+}
+
+.button_type_login-form {
+  margin-top: 69px;
+  padding: 15px 0;
+  width: 100%;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #FFFFFF;
+  background: #4285F4;
+  border-radius: 3px;
+}
+
+.button_type_close {
+  position: absolute;
+  padding: 0;
+  top: 25px;
+  right: 25px;
+  width: 22px;
+  height: 22px;
+  background-image: url('../../images/button_type_close.svg');
+  background-position: center;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.button_type_close_tooltip {
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../../images/button_type_close.svg');
+}
+
+@media screen and (max-width: 768px) {
+  .button_type_edit {
+    margin-top: 194px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .button_type_close_tooltip {
+    top: -55px;
+    right: 0;
+    transform: scale(0.60);
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .button_type_edit {
+    margin-top: auto;
+  }
+
+  .button_type_logout {
+    margin-bottom: 40px;
+  }
+
+  .button_type_register {
+    margin-top: auto;
+  }
+
+  .button_type_login-form {
+    margin-top: auto;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .button_type_login {
+    margin-left: 14px;
+    padding: 5px 12px;
+    font-size: 10px;
+  }
+
+  .button_type_save {
+    position: absolute;
+    top: 180px;
+    right: 16px;
+  }
+
+  .button_type_saved {
+    position: absolute;
+    top: 180px;
+    right: 16px;
+  }
+
+  .button_type_delete {
+    position: absolute;
+    top: 180px;
+    right: 16px;
+  }
+
+  .button_type_next {
+    width: 240px;
+  }
+}

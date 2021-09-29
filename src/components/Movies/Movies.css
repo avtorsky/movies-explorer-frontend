@@ -1,0 +1,16 @@
+.movies {
+  padding-top: 70px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 100px);
+  max-width: 1280px;
+  min-width: 758px;
+  align-self: center;
+}
+
+@media screen and (max-width: 768px) {
+  .movies {
+    max-width: 768px;
+    min-width: 310px;
+  }
+}
