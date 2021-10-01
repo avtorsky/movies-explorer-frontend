@@ -42,6 +42,7 @@
 .button_type_account {
   margin: 0;
   padding: 8px 20px;
+  width: 100px;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -49,7 +50,7 @@
   background: #202020;
   background-image: url('../../images/button_type_account.svg');
   background-repeat: no-repeat;
-  background-position: left;
+  background-position-x: 80%;
   border-radius: 20px;
   color: #FFFFFF;
 }

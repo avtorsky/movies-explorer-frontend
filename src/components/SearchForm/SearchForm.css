@@ -38,6 +38,11 @@
   outline: none;
 }
 
+.search__input:focus {
+  border-bottom: 1px solid #4285F4;
+  outline: none;
+}
+
 .search__input::placeholder {
   font-style: normal;
   font-weight: 500;

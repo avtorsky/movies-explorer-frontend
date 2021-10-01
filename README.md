@@ -12,6 +12,9 @@ UI for [Practicum](https://practicum.yandex.com/web/) online bootcamp diploma de
 Repository for backend dev: <a href="https://github.com/avtorsky/movies-explorer-api" target="_blank">/movies-explorer-api</a>
 
 ## Changelog
+Release 20211001:
+fix(./src/components/App): level-2 improvements after code review
+
 Release 20210929:
 * ci: Nginx build configuration
 * feat(./src/components/App): routing setup

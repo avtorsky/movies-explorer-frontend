@@ -1,6 +1,7 @@
 .promo {
   position: relative;
   padding: 75px 70px 50px;
+  margin: 0;
   display: grid;
   grid-template-columns: minmax(auto, 100%);
   row-gap: 36px;

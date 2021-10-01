@@ -159,30 +159,44 @@
   .author__content {
     margin-top: 60px;
   }
+
+  .author__info {
+    width: 292px;
+  }
   
   .author__name {
+    width: 292px;
     font-size: 30px;
     line-height: 36px;
   }
 
-  .author__status {
+  .author__about {
+    margin-top: 20px;
+    width: 292px;
     font-size: 11px;
     line-height: 16px;
-    margin-top: 20px;
+    text-align: justify;
   }
 
-  .author__about {
+  .author__status {
+    margin-top: 20px;
+    width: 292px;
     font-size: 11px;
     line-height: 16px;
-    margin-top: 20px;
   }
 
   .author__links {
     margin-top: 40px;
+    flex-direction: column;
+    width: 292px;
   }
 
   .author__item-link {
-    margin-right: 26px;
+    margin-bottom: 15px;
+  }
+
+  .author__item-link:last-of-type {
+    margin-bottom: 0;
   }
 
   .author__image {
