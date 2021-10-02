@@ -1,0 +1,167 @@
+.project {
+  padding: 110px 70px;
+  background-color: #202020;
+}
+
+.project__info {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 70px;
+  color: #FFFFFF;
+}
+
+.project__info-box {
+  display: flex;
+  flex-direction: column;
+  margin-right: 40px;
+  align-items: flex-start;
+}
+
+.project__info-box:last-of-type {
+  margin-right: 0;
+}
+
+.project__info-title {
+  margin: 0;
+  padding: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: normal;
+}
+
+.project__info-text {
+  margin: 26px 0 0;
+  padding: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.project__progress {
+  display: grid;
+  margin: 110px 0 0;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: 228px 1fr;
+  grid-template-rows: 36px 31px;
+  grid-template-areas:
+    'progress-stage-backend progress-stage-frontend'
+    'progress-name-backend progress-name-frontend';
+}
+
+.project__stage {
+  margin: 0;
+  padding: 9px 0;
+  width: 100%;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.project__stage_type_backend {
+  grid-area: progress-stage-backend;
+  background-color: #3DDC84;
+  color: #000000;
+}
+
+.project__stage_type_frontend {
+  grid-area: progress-stage-frontend;
+  background-color: #303030;
+  color: #FFFFFF;
+}
+
+.project__name {
+  margin: 0;
+  padding-top: 14px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #8B8B8B;
+}
+
+.project__name_type_backend {
+  grid-area: progress-name-backend;
+}
+
+.project__name_type_frontend {
+  grid-area: progress-name-frontend;
+}
+
+@media screen and (max-width: 768px) {
+  .project {
+    padding: 90px 50px;
+  }
+
+  .project__info-box {
+    margin-right: 30px;
+  }
+
+  .project__info-text {
+    margin: 22px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .project__progress {
+    margin: 93px 0 0;
+    grid-template-columns: 140px 1fr;
+  }
+
+  .project__name {
+    font-weight: normal;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .project__info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 60px;
+  }
+
+  .project__info-box {
+    margin: 0 0 56px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .project {
+    padding: 70px 18px;
+  }
+  
+  .project__info-title {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .project__info-text {
+    margin: 16px 0 0;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .project__progress {
+    margin: 93px 0 0;
+    grid-template-rows: 36px 23px;
+    grid-template-columns: 100px 1fr;
+  }
+
+  .project__stage {
+    padding: 11px 0;
+    font-size: 11px;
+    line-height: 13px;
+  }
+
+  .project__name {
+    padding-top: 10px;
+    font-size: 11px;
+    line-height: 13px;
+  }
+}

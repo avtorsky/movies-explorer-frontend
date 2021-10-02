@@ -1,0 +1,30 @@
+.stack {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 60px;
+  background: #303030;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.04em;
+  transition: opacity .3s ease-in-out;
+  cursor: pointer;
+}
+
+.stack:hover {
+  opacity: 0.7;
+}
+
+@media screen and (max-width: 1024px) {
+  .stack {
+    width: 84px;
+    height: 56px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

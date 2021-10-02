@@ -1,0 +1,28 @@
+.movies-cardlist {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  justify-content: center;
+  align-content: center;
+  list-style: none;
+  font-size: 0;
+}
+
+.movies-cardlist__element {
+  margin: 0;
+  padding-bottom: 30px;
+}
+
+.movies-cardlist__element:last-of-type {
+  padding-bottom: 0;
+}
+
+@media screen and (max-width: 425px) {
+  .movies-cardlist {
+    max-width: 300px;
+  }
+
+  .movies-cardlist__element {
+    padding-bottom: 20px;
+  }
+}
