@@ -1,9 +1,9 @@
 import './Header.css';
-import Navigation from '../Navigation/Navigation';
-import Button from '../Button/Button';
-import Logo from '../Logo/Logo';
-import Hamburger from '../Hamburger/Hamburger';
 import { Link } from 'react-router-dom';
+import Button from '../Button/Button';
+import Hamburger from '../Hamburger/Hamburger';
+import Logo from '../Logo/Logo';
+import Navigation from '../Navigation/Navigation';
 
 const Header = ({ theme, isLoggedIn, isTablet, openSideNavigation }) => {
   return (

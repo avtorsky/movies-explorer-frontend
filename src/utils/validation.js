@@ -22,4 +22,7 @@ export const validator = {
     minInputLength: (value) => value.length < minInputLength,
     required: (value) => value === '',
   },
+  search: {
+    required: (value) => value === '',
+  },
 };

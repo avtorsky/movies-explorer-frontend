@@ -1,13 +1,16 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Switch, Route } from 'react-router-dom';
-// import InfoTooltip from '../InfoTooltip/InfoTooltip';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
 import Login from '../Login/Login';
 import Main from '../Main/Main';
+import mainApi from '../../utils/MainApi';
 import Movies from '../Movies/Movies';
 import NotFound from '../NotFound/NotFound';
-// import Preloader from '../Preloader/Preloader';
+import Preloader from '../Preloader/Preloader';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
@@ -16,61 +19,28 @@ import SideNavigation from '../SideNavigation/SideNavigation';
 const App = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
   const isTablet = useMediaQuery({ query: '(max-width: 768px)' });
-  // const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [isProcessing, setIsProcessing] = useState(false);
+  const history = useHistory();
+  const [currentUser, setCurrentUser] = useState({});
+  const [favorites, setFavorites] = useState([]);
+  const [infoTooltipState, setInfoTooltipState] = useState({
+    tooltipOpen: false,
+    isSuccessful: false,
+    message: '',
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem('loggedIn') || false
+  );
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSideNavigation, setIsSideNavigation] = useState(false);
-  // const [isSuccessful, setIsSuccessful] = useState(false);
-  const [movies, setMovies] = useState([
-    {
-      name: 'Каратель',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1704946/e3f567e0-1029-42c1-aa95-3565d3acc682/x178_2',
-      duration: 53,
-      trailer: 'https://www.youtube.com/watch?v=fbwEJkCaP6M',
-      status: 'saved',
-      id: 0,
-    },
-    {
-      name: 'Ходячие мертвецы',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/deca8092-1ee2-497b-9062-06cfebb43634/x178_2',
-      duration: 43,
-      trailer: 'https://www.youtube.com/watch?v=SAiosqlJ8qE',
-      status: 'saved',
-      id: 1,
-    },
-    {
-      name: 'Расплата',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/1ac05046-c7f9-4192-9fa4-a18a79b21635/3840x',
-      duration: 128,
-      trailer: 'https://www.youtube.com/watch?v=AD6lEHZXgFM',
-      status: 'saved',
-      id: 2,
-    },
-    {
-      name: 'Ярость',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/f83091c0-a2d1-4797-b504-67c557c6cfbf/x178_2',
-      duration: 134,
-      trailer: 'https://www.youtube.com/watch?v=60Ss1hku-8I',
-      status: 'unsaved',
-      id: 3,
-    },
-    {
-      name: 'Убийца',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/68627e1b-089d-4544-bb49-e6eb24ddceb1/x504',
-      duration: 121,
-      trailer: "https://www.youtube.com/watch?v=kCBqiZ_mhrI",
-      status: 'unsaved',
-      id: 4,
-    },
-    {
-      name: 'Выстрел в пустоту',
-      image: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/36a4778c-817f-4805-89f1-8a54c00c2b34/x178_2',
-      duration: 120,
-      trailer: 'https://www.youtube.com/watch?v=nvuxGvotTz0',
-      status: 'unsaved',
-      id: 5,
-    },
-  ])
+  const [movies, setMovies] = useState([]);
+  const [moviesResults, setMoviesResults] = useState([]);
+  const [moviesShort, setMoviesShort] = useState(false);
+  
+  const handleEscClick = (event) => {
+    if (event.key === 'Escape') {
+      closeSideNavigation();
+    }
+  };
   
   const closeSideNavigation = () => {
     setIsSideNavigation(false);
@@ -81,78 +51,155 @@ const App = () => {
     setIsSideNavigation(true);
     document.addEventListener('keydown', handleEscClick);
   };
+
+  const handleTokenCheck = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      mainApi.currentToken = token;
+      mainApi
+        .checkToken(token)
+        .then((res) => {
+          if (!res.message) {
+            setIsProcessing(true);
+            setCurrentUser(res);
+            mainApi
+              .getMovies()
+              .then((data) => {
+                setFavorites(Object.values(data).reverse());
+              })
+              .catch(() => {
+                setInfoTooltipState({
+                  tooltipOpen: true,
+                  isSuccessful: false,
+                  message: 'Что-то пошло не так. Попробуйте ещё раз.',
+                });
+              })
+              .finally(() => {
+                setIsProcessing(false);
+              });
+            if (localStorage.getItem('moviesResults')) {
+              setMoviesResults(
+                JSON.parse(localStorage.getItem('moviesResults') || '[]')
+              );
+            }
+            setIsLoggedIn(true);
+          }
+        })
+        .catch((res) => console.log(res));
+    }
+  };
+
+  const handleLogin = () => {
+    handleTokenCheck();
+    setIsLoggedIn(true);
+    localStorage.setItem('loggedIn', true);
+    history.push('/movies');
+  }
   
   useEffect(() => {
     if (!isTablet) {
       setIsSideNavigation(false);
     }
   }, [isTablet]);
-  
-  const handleEscClick = (event) => {
-    if (event.key === 'Escape') {
-      closeSideNavigation();
-    }
-  };
 
+  useEffect(() => {
+    handleTokenCheck();
+  }, []);
+  
   return (
     <section className="page">
-      {/* <Preloader isProcessing={isProcessing} />
+      <Preloader isProcessing={isProcessing} />
       <InfoTooltip
-        isInfoTooltipOpen={isInfoTooltipOpen}
-        setIsInfoTooltipOpen={setIsInfoTooltipOpen}
-        isSuccessful={isSuccessful}
-      /> */}
+        infoTooltipState={infoTooltipState}
+        setInfoTooltipState={setInfoTooltipState}
+      />
       <SideNavigation
         isLoggedIn={isLoggedIn}
         isSideNavigation={isSideNavigation}
         closeSideNavigation={closeSideNavigation}
       />
-      <Switch>
-        <Route exact path='/'>
-          <Main
-            isTablet={isTablet}
-            isLoggedIn={isLoggedIn}
-            openSideNavigation={openSideNavigation}
-          />
-        </Route>
-        <Route path='/movies'>
-          <Movies
+      <CurrentUserContext.Provider value={currentUser}>
+        <Switch>
+          <Route exact path='/'>
+            <Main
+              isTablet={isTablet}
+              isLoggedIn={isLoggedIn}
+              openSideNavigation={openSideNavigation}
+            />
+          </Route>
+          <ProtectedRoute
+            path='/movies'
+            component={Movies}
             movies={movies}
             setMovies={setMovies}
             isMobile={isMobile}
             isTablet={isTablet}
             isLoggedIn={isLoggedIn}
+            isProcessing={isProcessing}
+            moviesShort={moviesShort}
             openSideNavigation={openSideNavigation}
+            setInfoTooltipState={setInfoTooltipState}
+            setIsProcessing={setIsProcessing}
+            setMoviesShort={setMoviesShort}
+            favorites={favorites}
+            moviesResults={moviesResults}
+            setFavorites={setFavorites}
+            setMoviesResults={setMoviesResults}
           />
-        </Route>
-        <Route path='/favorites'>
-          <SavedMovies
-            movies={movies}
-            setMovies={setMovies}
+          <ProtectedRoute
+            path='/favorites'
+            component={SavedMovies}
             isMobile={isMobile}
             isTablet={isTablet}
             isLoggedIn={isLoggedIn}
+            isProcessing={isProcessing}
+            moviesShort={moviesShort}
             openSideNavigation={openSideNavigation}
+            setInfoTooltipState={setInfoTooltipState}
+            setIsProcessing={setIsProcessing}
+            setMoviesShort={setMoviesShort}
+            favorites={favorites}
+            moviesResults={moviesResults}
+            setFavorites={setFavorites}
           />
-        </Route>
-        <Route path='/profile'>
-          <Profile
+          <ProtectedRoute
+            path='/profile'
+            component={Profile}
             isTablet={isTablet}
             isLoggedIn={isLoggedIn}
             setIsLoggedIn={setIsLoggedIn}
             openSideNavigation={openSideNavigation}
+            setIsProcessing={setIsProcessing}
+            setInfoTooltipState={setInfoTooltipState}
+            setCurrentUser={setCurrentUser}
           />
-        </Route>
-        <Route path='/signup'>
-          <Register />
-        </Route>
-        <Route path='/signin'>
-          <Login />
-        </Route>
-        <Route path='*'>
-          <NotFound />
-        </Route>
-      </Switch>
+          <Route path='/signup'>
+            {isLoggedIn ? (
+              <Redirect to='/movies' />
+            ) : (
+              <Register
+                setIsProcessing={setIsProcessing}
+                setInfoTooltipState={setInfoTooltipState}
+                handleLogin={handleLogin}
+              />
+            )}
+          </Route>
+          <Route path='/signin'>
+            {isLoggedIn ? (
+              <Redirect to='/movies' />
+            ) : (
+              <Login
+                setIsProcessing={setIsProcessing}
+                setInfoTooltipState={setInfoTooltipState}
+                handleLogin={handleLogin}
+              />
+            )}
+          </Route>
+          <Route path='*'>
+            <NotFound />
+          </Route>
+        </Switch>
+      </CurrentUserContext.Provider>
     </section>
   );
 };

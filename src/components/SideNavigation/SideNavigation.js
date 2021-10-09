@@ -1,6 +1,6 @@
 import './SideNavigation.css';
-import Navigation from '../Navigation/Navigation';
 import Button from '../Button/Button';
+import Navigation from '../Navigation/Navigation';
 
 const SideNavigation = ({ isSideNavigation, closeSideNavigation }) => {
   return (

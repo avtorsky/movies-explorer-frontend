@@ -3,12 +3,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../Button/Button';
 import Logo from '../Logo/Logo';
-import { validateInput, validator } from '../../utils/validation';
+import mainApi from '../../utils/MainApi';
 import { minInputLength, maxInputLength } from '../../utils/constants';
+import { validateInput, validator } from '../../utils/validation';
 
-const Register = () => {
+const Register = ({ setInfoTooltipState, handleLogin, setIsProcessing }) => {
   const [isDisabledState, setIsDisabledState] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [registerSubmitState, setRegisterSubmitState] = useState(false);
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -44,6 +45,52 @@ const Register = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsProcessing(true);
+    setRegisterSubmitState(true);
+    mainApi
+      .register(formValues.name, formValues.email, formValues.password)
+      .then((res) => {
+        if (!res.error) {
+          mainApi
+            .authorize(formValues.email, formValues.password)
+            .then((data) => {
+              if (data.token) {
+                localStorage.setItem('token', data.token);
+                handleLogin();
+              }
+            })
+            .catch(() => {
+              setInfoTooltipState({
+                tooltipOpen: true,
+                isSuccessful: false,
+                message: 'Ошибка в процессе аутентификации пользователя.'
+              })
+            });
+            setInfoTooltipState({
+              tooltipOpen: true,
+              isSuccessful: true,
+              message: 'Успешная аутентификация пользователя'
+            });
+        } else {
+          setInfoTooltipState({
+            tooltipOpen: true,
+            isSuccessful: false,
+            message: 'Ошибка в процессе регистрации пользователя'
+          });
+        }
+      })
+      .catch((err) => {
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: false,
+          message: 'Ошибка в процессе регистрации пользователя'
+        });
+        console.log(err);
+      })
+      .finally(() => {
+        setIsDisabledState(true);
+        setIsProcessing(false);
+        setRegisterSubmitState(false);
+      })
   };
 
   const handleInputChange = useCallback((event) => {
@@ -73,7 +120,7 @@ const Register = () => {
   const isNameValid = errors.name.required || errors.name.minLength || errors.name.maxLength;
   const isEmailValid = errors.email.required || errors.email.email;
   const isPasswordValid = errors.password.required || errors.password.minLength;
-  const isDisabled = isDisabledState || isSubmitDisabled || isProcessing;
+  const isDisabled = isDisabledState || isSubmitDisabled || registerSubmitState;
 
   return (
     <section className='register'>
@@ -153,7 +200,12 @@ const Register = () => {
             </label>
           </div>
         </fieldset>
-        <Button text={isProcessing ? 'Регистрация...' : 'Зарегистрироваться'} additionalClass={isDisabled && 'button_disabled'} type={'register'} buttonType='submit' />
+        <Button
+          text={registerSubmitState ? 'Регистрация...' : 'Зарегистрироваться'}
+          additionalClass={isDisabled && 'button_disabled'}
+          type={'register'}
+          buttonType='submit'
+        />
       </form>
       <div className='register__registered'>
         <p className='register__login-title'>Уже зарегистрированы?</p>
