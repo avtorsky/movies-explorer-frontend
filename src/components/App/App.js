@@ -64,8 +64,10 @@ const App = () => {
             setCurrentUser(res);
             mainApi
               .getMovies()
-              .then((data) => {
-                setFavorites(Object.values(data).reverse());
+              .then(() => {
+                setFavorites(
+                  JSON.parse(localStorage.getItem('favorites') || '[]')
+                );
               })
               .catch(() => {
                 setInfoTooltipState({

@@ -113,12 +113,24 @@ const Profile = ({
   const isDisabled = isDisabledState || isSubmitDisabled || profileSubmitState || !newData;
 
   const handleSignOut = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('moviesResults');
-    mainApi.currentToken = '';
-    history.push('/');
+    mainApi
+      .logout()
+      .then(() => {
+        setIsLoggedIn(false);
+        localStorage.removeItem('token');
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('moviesResults');
+        localStorage.removeItem('favorites');
+        history.push('/');
+      })
+      .catch((err) => {
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: true,
+          message: 'Ошибка при завершении сессии пользователя'
+        });
+        console.log(err.message);
+      })
   };
 
   return (

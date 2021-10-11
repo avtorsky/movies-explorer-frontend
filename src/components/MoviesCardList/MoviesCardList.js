@@ -63,7 +63,7 @@ const MoviesCardList = ({
   const handleNextClick = () => {
     setMoviesRenderState((prevState) => ({
       ...prevState,
-      moviesListCount: moviesRenderState.moviesListCount,
+      moviesListCount: moviesRenderState.moviesListCount + moviesRenderState.moviesListCount,
     }));
   };
 
@@ -73,7 +73,7 @@ const MoviesCardList = ({
       <p className='movies-cardlist__not-found'>Ничего не найдено</p>
     )}
     {!isProcessing && location.pathname === '/favorites' && renderFavoritesSearch.length === 0 && (
-      <p className='movies-cardlist__not-found'>Ничего не сохранено в избранном</p>
+      <p className='movies-cardlist__not-found'>Ничего не найдено</p>
     )}
     {location.pathname === '/movies' && renderMovies.length > 0 && (
       <ul className='movies-cardlist'>

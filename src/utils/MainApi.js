@@ -47,6 +47,22 @@ class MainApi {
       });
   };
 
+  logout = () => {
+    return fetch(`${this._baseUrl}/signout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+      });
+  }
+
   checkToken = (token) => {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
@@ -94,7 +110,12 @@ class MainApi {
         if (res.ok) {
           return res.json();
         }
-        return Promise.reject(`Ошибка: ${res.status}`);
+      })
+      .then((data) => {
+        if (data) {
+          localStorage.setItem('favorites', JSON.stringify(data.movies));
+          return data.movies;
+        }
       });
   }
 
@@ -174,6 +195,8 @@ class MainApi {
         return Promise.reject(`Ошибка: ${res.status}`);
       });
   }
+
+  logout
 }
 
 const mainApi = new MainApi({
