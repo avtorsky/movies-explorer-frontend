@@ -1,14 +1,15 @@
 import './Login.css';
-import Button from '../Button/Button';
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { validateInput, validator } from '../../utils/validation';
-import { minInputLength } from '../../utils/constants';
+import Button from '../Button/Button';
 import Logo from '../Logo/Logo';
+import mainApi from '../../utils/MainApi';
+import { minInputLength } from '../../utils/constants';
+import { validateInput, validator } from '../../utils/validation';
 
-const Login = () => {
+const Login = ({ handleLogin, setIsProcessing, setInfoTooltipState }) => {
   const [isDisabledState, setIsDisabledState] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [loginSubmitState, setLoginSubmitState] = useState(false);
   const [formValues, setFormValues] = useState({
     email: '',
     password: '',
@@ -37,6 +38,38 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsProcessing(true);
+    setLoginSubmitState(true);
+    mainApi
+      .authorize(formValues.email, formValues.password)
+      .then((data) => {
+        if (data.message) {
+          setInfoTooltipState({
+            tooltipOpen: true,
+            isSuccessful: false,
+            message: 'В запросе переданы некорректные email или пароль',
+          });
+        } else if (data.token) {
+          setInfoTooltipState({
+            tooltipOpen: true,
+            isSuccessful: true,
+            message: 'Успешная аутентификация пользователя'
+          });
+          localStorage.setItem('token', data.token);
+          handleLogin();
+        }
+      })
+      .catch(() => {
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: false,
+          message: 'Ошибка в процессе аутентификации пользователя'
+        });
+      })
+      .finally(() => {
+        setIsDisabledState(true);
+        setIsProcessing(false);
+        setLoginSubmitState(false);
+      });
   };
 
   const handleInputChange = useCallback((event) => {
@@ -63,7 +96,7 @@ const Login = () => {
   const isSubmitDisabled = isEmailInvalid || isPasswordInvalid;
   const isEmailValid = errors.email.required || errors.email.email;
   const isPasswordValid = errors.password.required || errors.password.minLength;
-  const isDisabled = isDisabledState || isSubmitDisabled || isProcessing;
+  const isDisabled = isDisabledState || isSubmitDisabled || loginSubmitState;
 
   return (
     <section className='login'>
@@ -118,7 +151,12 @@ const Login = () => {
             </label>
           </div>
         </fieldset>
-        <Button text={isProcessing ? 'Вход...' : 'Войти'} additionalClass={isDisabled && 'button_disabled'} type={'login-form'} buttonType='submit' />
+        <Button
+          text={loginSubmitState ? 'Вход...' : 'Войти'}
+          additionalClass={isDisabled && 'button_disabled'}
+          type={'login-form'}
+          buttonType='submit'
+        />
       </form>
       <div className='login__noregister'>
         <p className='login__register-title'>Ещё не зарегистрированы?</p>

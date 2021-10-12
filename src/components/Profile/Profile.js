@@ -1,13 +1,26 @@
 import './Profile.css';
-import { useState, useEffect, useCallback } from 'react';
-import Header from '../Header/Header';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '../Button/Button';
-import { validateInput, validator } from '../../utils/validation';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import Header from '../Header/Header';
+import mainApi from '../../utils/MainApi';
 import { minInputLength } from '../../utils/constants';
+import { validateInput, validator } from '../../utils/validation';
 
-const Profile = ({ isTablet, isLoggedIn, openSideNavigation }) => {
+const Profile = ({
+  isTablet,
+  isLoggedIn,
+  openSideNavigation,
+  setIsLoggedIn,
+  setCurrentUser,
+  setInfoTooltipState,
+  setIsProcessing,
+}) => {
+  const history = useHistory();
+  const currentUser = useContext(CurrentUserContext);
   const [isDisabledState, setIsDisabledState] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [profileSubmitState, setProfileSubmitState] = useState(false);
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -24,18 +37,53 @@ const Profile = ({ isTablet, isLoggedIn, openSideNavigation }) => {
   });
 
   useEffect(() => {
-    setIsDisabledState(true);
-    return () => {
+    if (currentUser.name !== undefined && currentUser.email !== undefined) {
       setFormValues({
-        name: '',
-        email: '',
+        name: currentUser.name,
+        email: currentUser.email,
       });
-    };
-  }, []);
+    }
+  }, [currentUser]);
+
+  const [newData, setNewData] = useState(false);
+
+  useEffect(() => {
+    if (
+      formValues.name === currentUser.name &&
+      formValues.email === currentUser.email
+    ) {
+      setNewData(false);
+    } else {
+      setNewData(true);
+    }
+  }, [formValues, currentUser]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsProcessing(true);
+    setProfileSubmitState(true);
+    mainApi
+      .setUserInfo(formValues.name, formValues.email)
+      .then((res) => {
+        setCurrentUser(res);
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: true,
+          message: 'Данные аккаунта актуализированы'
+        });
+      })
+      .catch(() => {
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: false,
+          message: 'Ошибка обновления данных аккаунта'
+        });
+      })
+      .finally(() => {
+        setIsProcessing(false);
+        setIsDisabledState(true);
+        setProfileSubmitState(false);
+      });
   };
 
   const handleInputChange = useCallback((event) => {
@@ -62,11 +110,37 @@ const Profile = ({ isTablet, isLoggedIn, openSideNavigation }) => {
   const isSubmitDisabled = isNameInvalid || isEmailInvalid;
   const isNameValid = errors.name.required || errors.name.minLength;
   const isEmailValid = errors.email.required || errors.email.email;
-  const isDisabled = isDisabledState || isSubmitDisabled || isProcessing;
+  const isDisabled = isDisabledState || isSubmitDisabled || profileSubmitState || !newData;
+
+  const handleSignOut = () => {
+    mainApi
+      .logout()
+      .then(() => {
+        setIsLoggedIn(false);
+        localStorage.removeItem('token');
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('moviesResults');
+        localStorage.removeItem('favorites');
+        history.push('/');
+      })
+      .catch((err) => {
+        setInfoTooltipState({
+          tooltipOpen: true,
+          isSuccessful: true,
+          message: 'Ошибка при завершении сессии пользователя'
+        });
+        console.log(err.message);
+      })
+  };
 
   return (
     <>
-      <Header isTablet={isTablet} isLoggedIn={'true'} openSideNavigation={openSideNavigation} theme={'black'} />
+      <Header
+        isTablet={isTablet}
+        isLoggedIn={isLoggedIn}
+        openSideNavigation={openSideNavigation}
+        theme={'black'}
+      />
       <section className='profile'>
         <h3 className='profile__title'>{`Привет, ${name}!`}</h3>
         <form className='profile__form' name='profile' onSubmit={handleSubmit} noValidate>
@@ -117,9 +191,18 @@ const Profile = ({ isTablet, isLoggedIn, openSideNavigation }) => {
               </label>
             </div>
           </fieldset>
-          <Button text={isProcessing ? 'Сохранение...' : 'Редактировать'} additionalClass={isDisabled && 'button_disabled'} type={'edit'} buttonType='submit' />
+          <Button
+            text={profileSubmitState ? 'Сохранение...' : 'Редактировать'}
+            additionalClass={isDisabled && 'button_disabled'}
+            type={'edit'}
+            buttonType='submit'
+          />
         </form>
-        <Button text={'Выйти из аккаунта'} type={'logout'} />
+        <Button
+          text={'Выйти из аккаунта'}
+          type={'logout'}
+          onClick={handleSignOut}
+        />
       </section>
     </>
   );

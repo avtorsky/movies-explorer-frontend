@@ -1,17 +1,15 @@
 import './FilterCheckbox.css';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
-const FilterCheckbox = () => {
-  const [isChecked, setIsChecked] = useState(false);
-
+const FilterCheckbox = ({ moviesShort, setMoviesShort }) => {
   const handleCheck = useCallback(() => {
-    setIsChecked(!isChecked);
-  }, [isChecked]);
+    setMoviesShort(!moviesShort);
+  }, [moviesShort, setMoviesShort]);
 
   return (
     <section className='filter'>
       <label className='filter__switch'>
-        <input className='filter__checkbox' type='checkbox' checked={isChecked} onChange={handleCheck} />
+        <input className='filter__checkbox' type='checkbox' checked={moviesShort} onChange={handleCheck} />
         <span className='filter__tumbler'></span>
       </label>
       <p className='filter__title'>Короткометражки</p>

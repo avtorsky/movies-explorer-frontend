@@ -8,6 +8,15 @@
   font-size: 0;
 }
 
+.movies-cardlist__not-found {
+  margin: 20px auto;
+  color: #FFFFFF;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+}
+
 .movies-cardlist__element {
   margin: 0;
   padding-bottom: 30px;

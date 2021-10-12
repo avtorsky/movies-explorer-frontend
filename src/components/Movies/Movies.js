@@ -1,16 +1,55 @@
 import './Movies.css';
-import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchForm from '../SearchForm/SearchForm';
 
-const Movies = ({ isTablet, isLoggedIn, openSideNavigation, movies, setMovies }) => {
+const Movies = ({
+  isMobile,
+  isTablet,
+  isLoggedIn,
+  isProcessing,
+  setIsProcessing,
+  openSideNavigation,
+  setInfoTooltipState,
+  movies,
+  setMovies,
+  moviesResults,
+  setMoviesResults,
+  moviesShort,
+  setMoviesShort,
+  favorites,
+  setFavorites,
+}) => {
   return (
     <>
-      <Header isTablet={isTablet} isLoggedIn={'true'} openSideNavigation={openSideNavigation} theme={'black'} />
-      <SearchForm />
+      <Header
+        isTablet={isTablet}
+        isLoggedIn={isLoggedIn}
+        openSideNavigation={openSideNavigation}
+        theme={'black'}
+      />
+      <SearchForm
+        setMoviesResults={setMoviesResults}
+        setInfoTooltipState={setInfoTooltipState}
+        setIsProcessing={setIsProcessing}
+        location={'non-saved'}
+        movies={movies}
+        setMovies={setMovies}
+        moviesShort={moviesShort}
+        setMoviesShort={setMoviesShort}
+      />
       <section className='movies'>
-        <MoviesCardList movies={movies} setMovies={setMovies} />
+        <MoviesCardList
+          isMobile={isMobile}
+          isTablet={isTablet}
+          isProcessing={isProcessing}
+          setIsProcessing={setIsProcessing}
+          moviesShort={moviesShort}
+          moviesResults={moviesResults}
+          favorites={favorites}
+          setFavorites={setFavorites}
+        />
       </section>
       <Footer />
     </>
